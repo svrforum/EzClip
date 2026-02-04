@@ -1,0 +1,74 @@
+.dropzone {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: var(--spacing-xl);
+  border: 2px dashed var(--border-medium);
+  border-radius: var(--radius-lg);
+  background: var(--bg-secondary);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.dropzone:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.dropzone.dragging {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  transform: scale(1.01);
+}
+
+.dropzone.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dropzone.disabled:hover {
+  border-color: var(--border-medium);
+  background: var(--bg-secondary);
+}
+
+.input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  text-align: center;
+  pointer-events: none;
+}
+
+.icon {
+  color: var(--text-tertiary);
+}
+
+.dragging .icon {
+  color: var(--color-primary);
+}
+
+.text {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+}
+
+.hint {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+}

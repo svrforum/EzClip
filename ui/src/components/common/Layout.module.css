@@ -1,0 +1,27 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-secondary);
+}
+
+.main {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: var(--content-padding);
+  max-width: calc(100vw - var(--sidebar-width) - var(--job-panel-width));
+}
+
+@media (max-width: 1200px) {
+  .main {
+    max-width: calc(100vw - var(--sidebar-width));
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    margin-left: 0;
+    max-width: 100%;
+    padding: var(--spacing-md);
+    padding-bottom: 80px;
+  }
+}

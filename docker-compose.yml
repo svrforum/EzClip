@@ -1,0 +1,67 @@
+# EzClip - Self-hosted Image/Video Editor
+# Usage: docker compose up -d
+
+services:
+  # 1. FastAPI Backend
+  api:
+    container_name: ezclip-api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ:-Asia/Seoul}
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - MAX_UPLOAD_SIZE=${MAX_UPLOAD_SIZE:-500}
+      - FFMPEG_THREADS=${FFMPEG_THREADS:-4}
+      - REMBG_MODEL=${REMBG_MODEL:-u2net}
+    volumes:
+      - ${DATA_PATH:-./data}:/data
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # 2. React Frontend (Nginx)
+  ui:
+    container_name: ezclip-ui
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${UI_PORT:-3090}:80"
+    environment:
+      - TZ=${TZ:-Asia/Seoul}
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 3. Redis (Job Queue)
+  redis:
+    container_name: ezclip-redis
+    image: redis:7-alpine
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ:-Asia/Seoul}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  redis_data:
